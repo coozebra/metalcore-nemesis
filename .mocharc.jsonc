@@ -1,0 +1,5 @@
+{
+  "timeout": 20000,
+  "require": ["ts-node/register", "hardhat/register"],
+  "watch-ignore": ["node_modules", ".git", "tmp"]
+}

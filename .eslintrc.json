@@ -1,0 +1,29 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+  ],
+  "plugins": [
+    "node",
+    "prettier",
+    "@typescript-eslint",
+    "mocha"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 11
+  },
+  "rules": {
+    "@typescript-eslint/no-namespace": 0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "mocha/no-exclusive-tests": "error",
+    "max-len": [
+      "error",
+      {
+        "code": 120
+      }
+    ]
+  }
+}

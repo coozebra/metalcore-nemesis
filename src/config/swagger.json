@@ -1,0 +1,1665 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Nemesis",
+    "description": "Service that connects the blockchain to Web3 games.",
+    "version": "0.3.4"
+  },
+
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Checks if the server is alive",
+        "tags": ["Health"],
+        "responses": {
+          "200": {
+            "description": "A plain text \"pong\"",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "pong"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users": {
+      "get": {
+        "summary": "Retrieves logged in user",
+        "tags": ["Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the user info. The fab value represents the balance in wei, being wei the smallest amount of an ERC20. 1 FAB = 1e18 wei (1 000 000 000 000 000 000)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetrieveUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/access-keys/{gameId}":{
+      "get": {
+        "summary": "Retrieves the access keys for the user",
+        "tags": ["Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "description": "The gameId of the game",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the access keys for the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimAccessKeyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/assets/{gameId}":{
+      "get":{
+        "summary": "Retrieves all user's deposited assets in the game",
+        "tags": ["Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "description": "The gameId of the game",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the assets.",
+            "content":{ 
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetrieveAssetsResponse"
+                }
+              }
+            }
+          },
+          "404":{
+            "content":{
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/assets/deposit": {
+      "get":{
+        "summary": "Authorize the deposit of assets",
+        "tags": ["Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody":{
+          "content": {
+            "application/json":{
+              "schema": {
+                "$ref": "#/components/schemas/DepositAndWithdrawAssetsRequest"
+              }
+            }
+          }
+        },
+        "responses":{
+          "200": {
+            "description": "Returns signature to authorize the deposit of assets",
+            "content":{
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepositAndWithdrawAssetsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          },
+          "404":{
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          },
+          "409":{
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/assets/withdraw": {
+      "get":{
+        "summary": "Returns a signature to withdraw assets",
+        "tags": ["Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody":{
+          "content": {
+            "application/json":{
+              "schema": {
+                "$ref": "#/components/schemas/DepositAndWithdrawAssetsRequest"
+              }
+            }
+          }
+        },
+        "responses":{
+          "200": {
+            "description": "Returns signature to authorize the withdrawal of assets",
+            "content":{
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DepositAndWithdrawAssetsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          },
+          "404":{
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          },
+          "409":{
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/access-keys" : {
+      "patch":{
+        "summary": "Claims an access keys for the user",
+        "tags": ["Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimAccessKeyRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the access keys for the user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimAccessKeyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+
+    },
+
+    "/users/register": {
+      "post": {
+        "summary": "Creates a new account and user entry",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the users mongo ID, accountId and a SessionTicket.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/login": {
+      "post": {
+        "summary": "Login",
+        "tags": ["Users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the users mongo ID, accountId and a SessionTicket.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/wallet": {
+      "post": {
+        "summary": "Connects a user to their wallet. Must follow the format: LinkWallet: <walletAddress> <timestampInSeconds>",
+        "tags": ["Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WalletRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Wallet validated and linked to the user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WalletResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/studios/users": {
+      "post": {
+        "summary": "Creates a user",
+        "tags": ["Studios - Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns the users mongo ID and accountId. If the user already exists it will return an error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserAlreadyExists"
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "get": {
+        "summary": "Retrieves user with the accountId",
+        "tags": ["Studios - Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "description": "The accountId of the user",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the user info.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetrieveUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/studios/users/balances/increment": {
+      "patch": {
+        "summary": "Increments user balance",
+        "tags": ["Studios - Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBalanceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the account and user ids, and the current balances. The fab value represents the balance in wei, being wei the smallest amount of an ERC20. 1 FAB = 1e18 wei (1 000 000 000 000 000 000)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateBalanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/studios/users/balances/decrement": {
+      "patch": {
+        "summary": "Decrements user balance",
+        "tags": ["Studios - Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBalanceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the account and user ids, and the current balances. The fab value represents the balance in wei, being wei the smallest amount of an ERC20. 1 FAB = 1e18 wei (1 000 000 000 000 000 000)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateBalanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/studios/users/resources/increment": {
+      "patch": {
+        "summary": "Increments user resource balance",
+        "tags": ["Studios - Users"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateResourceBalanceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateResourceBalanceResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/studios/assets": {
+      "post": {
+        "summary": "Stores a new asset",
+        "tags": ["Studios - Assets"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StoreAssetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the created asset.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreAssetResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Retrieves all assets or from a specific user",
+        "tags": ["Studios - Assets"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "query",
+            "description": "The accountId of the user you're searching the assets from",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the assets.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetrieveAssetsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/studios/games": {
+      "post": {
+        "summary": "Stores a new game",
+        "tags": ["Studios - Games"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StoreGameRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Returns the created game.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreGameResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/studios/assets/burn": {
+      "post": {
+        "summary": "Burns an existing asset",
+        "tags": ["Studios - Assets"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BurnAssetRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sets the state of the asset to 'burning'",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BurnAssetResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/tokens/collection/{collectionId}/token/{tokenId}":{
+      "get":{
+        "summary": "Returns token's metadata for OpenSea",
+        "tags": ["Tokens"],
+        "parameters": [
+          {
+            "name": "collectionId",
+            "in": "path",
+            "description": "The collectionId of the token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "tokenId",
+            "in": "path",
+            "description": "The tokenId of the token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses":{
+          "200":{
+            "description": "Returns the token's metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenMetadata"
+                }
+              }
+            }
+          },
+          "404":{
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/studios/assets/{assetId}/attributes": {
+      "post": {
+        "summary": "Updates the asset's attributes",
+        "tags": ["Studios - Assets"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "assetId",
+            "in": "path",
+            "description": "The mongo id of the asset",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAttributesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Updates the attributes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAttributesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/server/games/{gameId}/users":{
+      "get": {
+        "summary": "Retrieves users profiles by their wallet address",
+        "tags": ["Server"],
+        "security": [
+          {
+            "AuthorizationKey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "description": "The gameId of the game",
+            "type": "string"
+          },
+          {
+            "name": "walletAddress",
+            "in": "query",
+            "description": "The user's walletAddress",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns the user profile.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RetrieveArrayUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DefaultErrorObject"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "components": {
+    "securitySchemes": {
+      "AuthorizationKey": {
+        "type": "apiKey",
+        "in": "header",
+        "scheme": "Bearer",
+        "name": "Authorization"
+      }
+    },
+
+    "schemas": {
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "accountId": {
+                "type": "string"
+              },
+              "sessionTicket": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+
+      "RegisterUserRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "type": "string"
+              },
+              "displayName": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "RegisterUserResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "studioId": {
+                "type": "string"
+              },
+              "accountId": {
+                "type": "string"
+              },
+              "balances": {
+                "type": "object"
+              },
+              "sessionTicket": {
+                "type": "string",
+                "example": "XXXXXXXXXXXXXXXX--XXXXXXXXXXXXXXXX-XXXXX-XXXXXXXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX="
+              }
+            }
+          }
+        }
+      },
+
+      "CreateUserRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "CreateUserResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "studioId": {
+                "type": "string"
+              },
+              "accountId": {
+                "type": "string"
+              },
+              "balances": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+
+      "UpdateResourceBalanceRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              },
+              "collectionId": {
+                "type": "string"
+              },
+              "balances": {
+                "type": "object",
+                "example": {
+                  "32": 10,
+                  "245": 30
+                },
+                "properties": {}
+              }
+            }
+          }
+        }
+      },
+      "UpdateResourceBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "userId": {
+                "type": "string"
+              },
+              "gameId": {
+                "type": "string"
+              },
+              "collectionId": {
+                "type": "string"
+              },
+              "balances": {
+                "type": "object",
+                "example": {
+                  "32": 10,
+                  "245": 30
+                },
+                "properties": {}
+              }
+            }
+          }
+        }
+      },
+
+      "UpdateBalanceRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string"
+              },
+              "key": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "UpdateBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "accountId": {
+                "type": "string"
+              },
+              "balances": {
+                "type": "object",
+                "example": {
+                  "fab": "1000000000000000000"
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "StoreAssetRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "accountId": {
+                "type": "string"
+              },
+              "collectionId": {
+                "type": "string"
+              },
+              "externalId": {
+                "type": "string"
+              },
+              "attributes": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+
+      "StoreAssetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "collectionId": {
+                "type": "string"
+              },
+              "externalId": {
+                "type": "string"
+              },
+              "attributes": {
+                "type": "object"
+              },
+              "tokenId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+
+      "RetrieveAssetsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "userId": {
+                  "type": "string"
+                },
+                "collectionId": {
+                  "type": "string"
+                },
+                "externalId": {
+                  "type": "string"
+                },
+                "attributes": {
+                  "type": "object"
+                },
+                "tokenId": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "UpdateAttributesRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "attributes": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      
+      "UpdateAttributesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "collectionId": {
+                "type": "string"
+              },
+              "externalId": {
+                "type": "string"
+              },
+              "attributes": {
+                "type": "object"
+              },
+              "tokenId": {
+                "type": "number"
+              },
+              "state": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+
+      "RetrieveArrayUserResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "displayName": {
+                  "type": "string"
+                },
+                "accountId": {
+                  "type": "string"
+                },
+                "walletAddress": {
+                  "type": "string"
+                },
+                "balances": {
+                  "type": "object",
+                  "example": {
+                    "fab": "1000000000000000000",
+                    "mgt": "1000000000000000000"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "RetrieveUserResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "displayName": {
+                "type": "string"
+              },
+              "accountId": {
+                "type": "string"
+              },
+              "walletAddress": {
+                "type": "string"
+              },
+              "balances": {
+                "type": "object",
+                "example": {
+                  "fab": "1000000000000000000",
+                  "mgt": "1000000000000000000"
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "WalletRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "signature": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "WalletResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "accountId": {
+                "type": "string"
+              },
+              "walletAddress": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+
+      "StoreGameRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "MetalCore"
+              },
+              "studioId": {
+                "type": "string",
+                "example": "abc123456"
+              },
+              "chain": {
+                "type": "string",
+                "example": "ethereum"
+              },
+              "currencies": {
+                "type": "object",
+                "properties": {
+                  "fab": {
+                    "type": "string",
+                    "example": "0x1111111111111111111111111111111111111111"
+                  },
+                  "mgt": {
+                    "type": "string",
+                    "example": "0x2222222222222222222222222222222222222222"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "StoreGameResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "123465abc"
+              },
+              "key": {
+                "type": "string",
+                "example": "a9010095424dbd02e37eb4f2040280d1c31e20e3a3f162aa5b415783efda0f83"
+              },
+              "name": {
+                "type": "string",
+                "example": "MetalCore"
+              },
+              "studioId": {
+                "type": "string",
+                "example": "abc123456"
+              },
+              "chain": {
+                "type": "string",
+                "example": "ethereum"
+              },
+
+              "currencies": {
+                "type": "object",
+                "properties": {
+                  "fab": {
+                    "type": "string",
+                    "example": "0x1111111111111111111111111111111111111111"
+                  },
+                  "mgt": {
+                    "type": "string",
+                    "example": "0x2222222222222222222222222222222222222222"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "BurnAssetRequest": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "assetId": {
+                "type": "string",
+                "example": "123465abc"
+              }
+            }
+          }
+        }
+      },
+
+      "BurnAssetResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "collectionId": {
+                "type": "string"
+              },
+              "externalId": {
+                "type": "string"
+              },
+              "attributes": {
+                "type": "object"
+              },
+              "tokenId": {
+                "type": "string"
+              },
+              "state": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+
+      "ClaimAccessKeyRequest":{
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "gameId": {
+                "type": "string",
+                "example": "e20270f8c6fe430cd6d97272"
+              }
+            }
+          }
+        }
+      },
+
+      "ClaimAccessKeyResponse":{
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "keys": {
+                "type": "array",
+                "items": {
+                  "type":"string"
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "DepositAndWithdrawAssetsRequest":{
+        "type":"object",
+        "properties":{
+          "data":{
+            "type":"object",
+            "properties":{
+              "assetId":{
+                "type":"string"
+              },
+              "chainId": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+
+      "DepositAndWithdrawAssetsResponse":{
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type":"object"
+              },
+              "signature": {
+                "type":"string"
+              }
+            }
+          }
+        }
+      },
+
+      "DefaultErrorObject": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "detail": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+
+      "UserAlreadyExists": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "detail": {
+                "type": "string",
+                "example": "User already exists"
+              }
+            }
+          }
+        }
+      },
+
+      "TokenMetadata":{
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  }
+}
+
