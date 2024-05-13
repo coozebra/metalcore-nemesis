@@ -1,6 +1,5 @@
 # Nemesis
 
-
 ## Description
 
 Service that connects games to the blockchain and vice-versa.
