@@ -168,3 +168,4 @@ The Portal, not the contract, interacts with Nemesis API to send information abo
 the action is possible. Now the Portal, as a web page, **interacts directly with Game Portal Contract**.
 
 > **_NOTE:_** As of now, the Private Key that is authorized to interact with all Game Portals is a global setting. This must be Game-Specific and perhaps not even held by Nemesis or any of us.
+
